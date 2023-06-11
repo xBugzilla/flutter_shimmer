@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-void main() => runApp(MyApp());
+import 'placeholders.dart';
+
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Shimmer',
       routes: <String, WidgetBuilder>{
-        'loading': (_) => LoadingListPage(),
+        'loading': (_) => const LoadingListPage(),
         'slide': (_) => SlideToUnlockPage(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -32,114 +38,70 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text('Shimmer'),
       ),
-      body: Column(
-        children: <Widget>[
-          ListTile(
-            title: const Text('Loading List'),
-            onTap: () => Navigator.of(context).pushNamed('loading'),
-          ),
-          ListTile(
-            title: const Text('Slide To Unlock'),
-            onTap: () => Navigator.of(context).pushNamed('slide'),
-          )
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              title: const Text('Loading List'),
+              onTap: () => Navigator.of(context).pushNamed('loading'),
+            ),
+            ListTile(
+              title: const Text('Slide To Unlock'),
+              onTap: () => Navigator.of(context).pushNamed('slide'),
+            )
+          ],
+        ),
       ),
     );
   }
 }
 
 class LoadingListPage extends StatefulWidget {
+  const LoadingListPage({super.key});
+
   @override
-  _LoadingListPageState createState() => _LoadingListPageState();
+  State<LoadingListPage> createState() => _LoadingListPageState();
 }
 
 class _LoadingListPageState extends State<LoadingListPage> {
-  bool _enabled = true;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Loading List'),
       ),
-      body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Expanded(
-              child: Shimmer.fromColors(
-                baseColor: Colors.grey[300],
-                highlightColor: Colors.grey[100],
-                enabled: _enabled,
-                child: ListView.builder(
-                  itemBuilder: (_, __) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          width: 48.0,
-                          height: 48.0,
-                          color: Colors.white,
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                width: double.infinity,
-                                height: 8.0,
-                                color: Colors.white,
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 2.0),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                height: 8.0,
-                                color: Colors.white,
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 2.0),
-                              ),
-                              Container(
-                                width: 40.0,
-                                height: 8.0,
-                                color: Colors.white,
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  itemCount: 6,
+      body: Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          enabled: true,
+          child: const SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                BannerPlaceholder(),
+                TitlePlaceholder(width: double.infinity),
+                SizedBox(height: 16.0),
+                ContentPlaceholder(
+                  lineType: ContentLineType.threeLines,
                 ),
-              ),
+                SizedBox(height: 16.0),
+                TitlePlaceholder(width: 200.0),
+                SizedBox(height: 16.0),
+                ContentPlaceholder(
+                  lineType: ContentLineType.twoLines,
+                ),
+                SizedBox(height: 16.0),
+                TitlePlaceholder(width: 200.0),
+                SizedBox(height: 16.0),
+                ContentPlaceholder(
+                  lineType: ContentLineType.twoLines,
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: FlatButton(
-                  onPressed: () {
-                    setState(() {
-                      _enabled = !_enabled;
-                    });
-                  },
-                  child: Text(
-                    _enabled ? 'Stop' : 'Play',
-                    style: Theme.of(context).textTheme.button.copyWith(
-                        fontSize: 18.0,
-                        color: _enabled ? Colors.redAccent : Colors.green),
-                  )),
-            )
-          ],
-        ),
-      ),
+          )),
     );
   }
 }
@@ -168,6 +130,8 @@ class SlideToUnlockPage extends StatelessWidget {
     'November',
     'December',
   ];
+
+  SlideToUnlockPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -214,13 +178,15 @@ class SlideToUnlockPage extends StatelessWidget {
             ),
           ),
           Positioned(
-              bottom: 24.0,
+              bottom: 32.0,
               left: 0.0,
               right: 0.0,
               child: Center(
                 child: Opacity(
                   opacity: 0.8,
                   child: Shimmer.fromColors(
+                    baseColor: Colors.black12,
+                    highlightColor: Colors.white,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
@@ -239,9 +205,6 @@ class SlideToUnlockPage extends StatelessWidget {
                         )
                       ],
                     ),
-                    baseColor: Colors.black12,
-                    highlightColor: Colors.white,
-                    loop: 3,
                   ),
                 ),
               ))
